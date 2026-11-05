@@ -1,0 +1,32 @@
+{
+  "name": "Molitar Custom Extensions",
+  "badgeLabel": "MOL",
+  "signingKey": "5e2b2564795db0af920d5ca1958de3a61b9dd40ad6278fbc007c9119ef2951ec",
+  "contact": {
+    "website": "https://github.com/molitar/mihon-custom-extensions"
+  },
+  "extensionList": {
+    "extensions": [
+      {
+        "name": "ManhwaZ (Custom)",
+        "packageName": "eu.kanade.tachiyomi.extension.en.manhwazcustom",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/apk/tachiyomi-en.manhwazcustom-v1.6.2.apk",
+          "iconUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/icon/eu.kanade.tachiyomi.extension.en.manhwazcustom.png"
+        },
+        "extensionLib": "1.6",
+        "versionCode": "106002",
+        "versionName": "1.6.2",
+        "contentWarning": "CONTENT_WARNING_MIXED",
+        "sources": [
+          {
+            "id": "3101173267604405323",
+            "name": "ManhwaZ (Custom)",
+            "language": "en",
+            "homeUrl": "https://manhwaz.cc"
+          }
+        ]
+      }
+    ]
+  }
+}

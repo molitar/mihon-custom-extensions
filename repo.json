@@ -1,0 +1,8 @@
+{
+  "index_v2": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/index.pb",
+  "meta": {
+    "name": "Molitar Custom Extensions",
+    "website": "https://github.com/molitar/mihon-custom-extensions",
+    "signingKeyFingerprint": "5e2b2564795db0af920d5ca1958de3a61b9dd40ad6278fbc007c9119ef2951ec"
+  }
+}
