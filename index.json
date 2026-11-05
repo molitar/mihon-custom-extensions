@@ -26,6 +26,46 @@
             "homeUrl": "https://manhwaz.cc"
           }
         ]
+      },
+      {
+        "name": "Hentai2Read (Custom)",
+        "packageName": "eu.kanade.tachiyomi.extension.en.hentai2readcustom",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/apk/tachiyomi-en.hentai2readcustom-v1.6.20.apk",
+          "iconUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/icon/eu.kanade.tachiyomi.extension.en.hentai2readcustom.png"
+        },
+        "extensionLib": "1.6",
+        "versionCode": "106020",
+        "versionName": "1.6.20",
+        "contentWarning": "CONTENT_WARNING_NSFW",
+        "sources": [
+          {
+            "id": "6565685324727943459",
+            "name": "Hentai2Read (Custom)",
+            "language": "en",
+            "homeUrl": "https://hentai2read.com"
+          }
+        ]
+      },
+      {
+        "name": "HentaiRead (Custom)",
+        "packageName": "eu.kanade.tachiyomi.extension.en.hentaireadcustom",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/apk/tachiyomi-en.hentaireadcustom-v1.6.2.apk",
+          "iconUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/icon/eu.kanade.tachiyomi.extension.en.hentaireadcustom.png"
+        },
+        "extensionLib": "1.6",
+        "versionCode": "106002",
+        "versionName": "1.6.2",
+        "contentWarning": "CONTENT_WARNING_NSFW",
+        "sources": [
+          {
+            "id": "3817119448087309943",
+            "name": "HentaiRead (Custom)",
+            "language": "en",
+            "homeUrl": "https://hentairead.com"
+          }
+        ]
       }
     ]
   }
