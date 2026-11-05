@@ -22,7 +22,7 @@ Mihon source ID:
 3101173267604405323
 
 Module:
-src/en/manhwazcustom
+extensions/src/en/manhwazcustom
 
 ## Status
 

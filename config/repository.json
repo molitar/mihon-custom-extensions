@@ -14,7 +14,8 @@
       "module": "en.manhwazcustom",
       "packageName": "eu.kanade.tachiyomi.extension.en.manhwazcustom",
       "sourceId": 3101173267604405323,
-      "status": "planned"
+      "status": "planned",
+      "sourcePath": "extensions/src/en/manhwazcustom"
     }
   ]
 }
