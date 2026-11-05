@@ -14,8 +14,11 @@
       "module": "en.manhwazcustom",
       "packageName": "eu.kanade.tachiyomi.extension.en.manhwazcustom",
       "sourceId": 3101173267604405323,
-      "status": "planned",
-      "sourcePath": "extensions/src/en/manhwazcustom"
+      "status": "published",
+      "sourcePath": "extensions/src/en/manhwazcustom",
+      "versionName": "1.6.2"
     }
-  ]
+  ],
+  "signingKeyFingerprintSha256": "5e2b2564795db0af920d5ca1958de3a61b9dd40ad6278fbc007c9119ef2951ec",
+  "mihonRepositoryUrl": "https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/index.min.json"
 }
