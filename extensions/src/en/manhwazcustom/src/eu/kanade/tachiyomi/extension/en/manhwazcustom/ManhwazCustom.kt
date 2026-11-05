@@ -22,24 +22,71 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.io.IOException
 
 @Source
 abstract class ManhwazCustom : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient(): OkHttpClient.Builder = this.rateLimit(2)
 
+    /**
+     * ManhwaZ sometimes serves its real catalog through the archive fallback
+     * with HTTP 503. Only validated first-party fallback HTML may be parsed.
+     * Other non-2xx responses retain normal error behavior.
+     */
+    private suspend fun loadValidatedDocument(url: String, requiredSelector: String): Document {
+        val response = client.get(url, Fetch.DOCUMENT, ensureSuccess = false)
+
+        return response.use { result ->
+            val status = result.code
+            val isFallback = status == 503
+
+            if (!result.isSuccessful && !isFallback) {
+                throw IOException("HTTP $status: $url")
+            }
+
+            if (isFallback) {
+                val requested = result.request.url
+                val expectedOrigin = requested.scheme == "https" && requested.host == "manhwaz.cc"
+                val expectedHeader = result.header("x-manhwaz-data-source")
+                    ?.equals("archive-fallback", ignoreCase = true) == true
+                val htmlContent = result.header("Content-Type")
+                    ?.contains("text/html", ignoreCase = true) == true
+
+                if (!expectedOrigin || !expectedHeader || !htmlContent) {
+                    throw IOException("HTTP 503: Unverified ManhwaZ fallback: $url")
+                }
+            }
+
+            val document = result.asJsoup()
+
+            if (isFallback) {
+                val challenge = document.title().contains("Just a moment", ignoreCase = true) ||
+                    document.select(
+                        "form#challenge-form, #cf-challenge-running, iframe[src*=challenges.cloudflare.com]",
+                    ).isNotEmpty()
+
+                if (challenge || document.select(requiredSelector).isEmpty()) {
+                    throw IOException("HTTP 503: Invalid ManhwaZ fallback HTML: $url")
+                }
+            }
+
+            document
+        }
+    }
+
     override suspend fun getPopularManga(page: Int): MangasPage {
         // The homepage "popular" grid is static across ?page=N, so only the first page is useful.
         if (page > 1) {
             return MangasPage(emptyList(), false)
         }
-        val document = client.get(baseUrl, Fetch.DOCUMENT).asJsoup()
+        val document = loadValidatedDocument(baseUrl, "article.popular-card")
         val mangas = document.select("article.popular-card").map(::cardToManga)
         return MangasPage(mangas, false)
     }
 
     override suspend fun getLatestUpdates(page: Int): MangasPage {
-        val document = client.get("$baseUrl/?page=$page", Fetch.DOCUMENT).asJsoup()
+        val document = loadValidatedDocument("$baseUrl/?page=$page", "article.latest-card")
         val mangas = document.select("article.latest-card").map(::cardToManga)
         return MangasPage(mangas, document.hasNextPage())
     }
@@ -60,7 +107,7 @@ abstract class ManhwazCustom : KeiSource() {
             addQueryParameter("page", page.toString())
         }.build()
 
-        val document = client.get(url, Fetch.DOCUMENT).asJsoup()
+        val document = loadValidatedDocument(url.toString(), if (query.isBlank() && genreId.isEmpty()) "article.latest-card" else "article.popular-card")
         val selector = if (query.isBlank() && genreId.isEmpty()) {
             "article.latest-card"
         } else {
@@ -88,7 +135,7 @@ abstract class ManhwazCustom : KeiSource() {
         fetchDetails: Boolean,
         fetchChapters: Boolean,
     ): SMangaUpdate {
-        val firstDocument = client.get(getMangaUrl(manga), Fetch.DOCUMENT).asJsoup()
+        val firstDocument = loadValidatedDocument(getMangaUrl(manga), "section.profile-manga h1")
         val details = parseMangaDetails(firstDocument)
 
         val chapterList = mutableListOf<SChapter>()
@@ -99,7 +146,7 @@ abstract class ManhwazCustom : KeiSource() {
                 chapterList += document.select("a.release-row").map(::releaseRowToChapter)
                 val nextUrl = document.selectFirst("nav.pagination a[aria-label=\"Next page\"]")?.attr("abs:href")
                     ?: break
-                document = client.get(nextUrl, Fetch.DOCUMENT).asJsoup()
+                document = loadValidatedDocument(nextUrl, "section.profile-manga h1")
             }
         }
 
@@ -133,7 +180,7 @@ abstract class ManhwazCustom : KeiSource() {
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val document = client.get(getChapterUrl(chapter), Fetch.DOCUMENT).asJsoup()
+        val document = loadValidatedDocument(getChapterUrl(chapter), "div.reader-pages figure.reader-page-image img")
         return document.select("div.reader-pages figure.reader-page-image img").mapIndexed { index, img ->
             val url = img.attr("abs:src").ifEmpty { img.attr("abs:data-src") }
             Page(index, imageUrl = url)
@@ -143,7 +190,7 @@ abstract class ManhwazCustom : KeiSource() {
     override val supportsFilterFetching get() = true
 
     override suspend fun fetchFilterData(): JsonElement {
-        val genres = client.get("$baseUrl/genre", Fetch.DOCUMENT).asJsoup()
+        val genres = loadValidatedDocument("$baseUrl/genre", ".genre-directory a")
             .select(".genre-directory a")
             .map { GenreOption(it.text().trim(), it.attr("href").removePrefix("/")) }
         return genres.toJsonElement()
