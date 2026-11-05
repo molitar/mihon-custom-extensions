@@ -7,9 +7,13 @@ GitHub owner: molitar
 
 https://github.com/molitar/mihon-custom-extensions
 
-## Planned distribution files
+## Distribution files (published 2026-11-05)
 
-The distribution branch will be `repo`.
+The distribution branch is `repo`.
+
+Mihon repository address: https://raw.githubusercontent.com/molitar/mihon-custom-extensions/repo/index.min.json
+
+Signing certificate SHA-256: 5e2b2564795db0af920d5ca1958de3a61b9dd40ad6278fbc007c9119ef2951ec
 
 - repo.json: Mihon repository metadata and signing fingerprint.
 - index.pb: current extension catalog.
@@ -38,10 +42,7 @@ Existing official and third-party extensions must remain untouched.
 
 ## Publishing policy
 
-The GitHub source repository remains private during development.
-
-The distribution endpoint must be publicly readable before it can
-be used as an ordinary Mihon extension repository.
+The repository is public and the `repo` branch is publicly readable, so it works as an ordinary Mihon extension repository.
 
 Never publish signing private keys, access tokens, or private
 diagnostic captures.
